@@ -1,0 +1,131 @@
+---
+title: "AS404- Assignment 01"
+author: "S/16/342  D.G.M.D.Dimbulkumbura"
+date: "3/24/2022"
+output: pdf_document
+---
+---
+title: "AS404 Assignment 01"
+author: "S/16/342  D.G.M.D.Dimbulkumbura"
+date: "3/24/2022"
+output: pdf_document
+---
+```{r}
+#Call to the tidyverse package
+library(tidyverse)
+library(magrittr)
+library(dplyr)
+```
+
+
+#..........Q(a)..........
+```{r}
+
+
+#Read the dataset
+crimeData=read_csv(file="E:/400 Level Sem 1/AS 404/Assignment/AS404_S16_342/crimeData.csv")
+
+
+
+  
+#Defining the column types
+
+crimeData=read_csv(file="E:/400 Level Sem 1/AS 404/Assignment/AS404_S16_342/crimeData.csv",
+                   col_types = c("dildiiiliiilii"))
+
+
+  #rename the column names in ‘snake case’ format
+
+crimeData=crimeData%>%
+rename(crime_rate=CrimeRate,
+       youth=Youth,
+       southern=Southern,
+       education=Education,
+       expenditure_year_0=ExpenditureYear0,
+       labour_force=LabourForce,
+       males=Males,
+       more_males=MoreMales,
+       state_size=StateSize,
+       youth_unemployment=YouthUnemployment,
+       mature_unemployment=MatureUnemployment,
+       high_youth_unemploy=HighYouthUnemploy,
+       wage=Wage,
+       below_wage=BelowWage)
+
+```
+#..........Q(b)..........
+
+```{r}
+crimeData%>%
+  ggplot(mapping = aes(x=crime_rate))+
+  geom_histogram(bins=15,color="blue",fill="yellow")+
+labs(title="Distribution of Crime Rate",x="Crime Rate",y="Count")
+  
+
+```
+
+..........Q(c)..........
+
+```{r}
+crimeData%>%
+  group_by(southern)%>%
+  summarise(avg_crime_rate=mean(crime_rate))
+
+
+```
+
+Southern states have high average crime rate than the non- southern states
+
+
+..........Q(d)..........
+
+```{r}
+crimeData%>%
+  ggplot()+
+  geom_boxplot(aes(x=southern,y=crime_rate,fill=southern))+
+labs(title="Crime rates in southern and non-southern states",x="Southern / Non-Southern",y="Crime Rate")
+  
+  
+  
+```
+The first quartile of Non-southerns' lower than the Southerns. But median & 3rd quartile of Non-southerns' higher than the Southerns. Also Non-southerns have higher range compared to the Southerns.
+
+..........Q(e)..........
+
+```{r}
+ggplot(crimeData, aes(x=more_males, y=crime_rate, fill=high_youth_unemploy)) + 
+    geom_boxplot() +
+    facet_wrap(~high_youth_unemploy)+
+  ggtitle("Crime rate comparing (more_males VS high_youth_unemploy)")
+  
+```
+
+..........Q(f)..........
+
+```{r}
+ggplot(crimeData, aes(x=more_males, y=youth_unemployment))+geom_bar(stat="identity",fill="blue")+
+labs(title="youth unemployment of the states based on gender composition",x="Number of Males > Number of Females",y="Youth unemployment")
+```
+
+..........Q(g)..........
+
+```{r}
+ggplot(crimeData, aes(x=wage, y=crime_rate)) + 
+    geom_point(color="red")+
+labs(title="Relationship between the Crime rate and Median weekly wage",x="Median weekly wage",y="Crime Rate")
+```
+  
+..........Q(h)..........  
+       
+```{r}
+linear_mod=lm(crimeData$crime_rate~crimeData$wage)
+```
+    
+
+..........Q(i)..........
+    
+```{r}
+summary(linear_mod)
+```
+    
+Y=(0.12722)*X+(35.97031) ;Where Y=Crime Rate & X=Median weekly wage  
